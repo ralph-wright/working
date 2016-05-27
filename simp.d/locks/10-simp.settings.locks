@@ -1,0 +1,11 @@
+/org/gnome/settings-daemon/plugins/power/active
+/org/gnome/desktop/screensaver/idle-activation-enabled
+/org/gnome/desktop/screensaver/lock-enabled
+/org/gnome/desktop/screensaver/lock-delay
+/org/gnome/desktop/lockdown/user-administration-disabled
+/org/gnome/desktop/media-handling/automount-open
+/org/gnome/desktop/media-handling/automount
+/org/gnome/desktop/media-handling/autorun-never
+/org/gnome/settings-daemon/plugins/media-keys/logout
+/org/gnome/login-screen/disable-restart-buttons
+

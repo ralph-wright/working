@@ -1,0 +1,31 @@
+[org/gnome/settings-daemon/plugins/power]
+active=false
+
+[org/gnome/desktop/screensaver]
+idle-activation-enabled=true
+lock-enabled=true
+lock-delay=0
+
+# Stops user from being able to add users
+[org/gnome/desktop/lockdown]
+user-administration-disabled=true
+
+# Automatcially create mount.  We should probably disable this in a default profile.
+[org/gnome/desktop/media-handling]
+automount-open=false
+
+# Automatcially create mount.  We should probably disable this in a default profile.
+[org/gnome/desktop/media-handling]
+automount=false
+
+# If media is mounted, setting this to true prevents it from auto running
+[org/gnome/desktop/media-handling]
+autorun-never=true
+
+# Ensures ctr-alt-del is not used for logout
+[org/gnome/settings-daemon/plugins/media-keys]
+logout='sdfgfdg'
+
+# Removes Shutdown From Login Screen
+[org/gnome/login-screen]
+disable-restart-buttons=true

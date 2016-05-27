@@ -1,0 +1,10 @@
+## this one is still broken
+[org/gnome/desktop/session]
+idle-delay=1999
+
+## This is for testing only
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/sr.jpg'
+picture-options='scaled'
+primary-color='000000'
+secondary-color='FFFFFF'
