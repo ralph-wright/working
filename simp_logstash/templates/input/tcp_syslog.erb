@@ -1,0 +1,21 @@
+input {
+  tcp {
+<% unless @add_field.empty? -%>
+    add_field => {
+    <%=
+      @add_field.keys.map do |k|
+        k = %("#{k}" => "#{@add_field[k]}")
+      end.join("\n      ")
+    %>
+    }
+<% end -%>
+<% unless @codec.empty? -%>
+    codec => <%= @codec %>
+<% end -%>
+    host => "<%= @host %>"
+    port => <%= @daemon_port %>
+<% unless @lstash_type.empty? -%>
+    type => "<%= @lstash_type %>"
+<% end -%>
+  }
+}

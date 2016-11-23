@@ -1,0 +1,9 @@
+--- 
+  !ruby/sym backends: 
+    - yaml
+  !ruby/sym yaml: 
+    !ruby/sym datadir: /home/rwright/code/elg/pupmod-simp-simp_logstash/spec/fixtures/hieradata
+  !ruby/sym hierarchy: 
+    - "%{custom_hiera}"
+    - "%{module_name}"
+    - default
