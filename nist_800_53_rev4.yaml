@@ -3,6 +3,87 @@ compliance_map::percent_sign: '%'
 compliance_map:
   version: 1.0.0
   nist_800_53_rev4:
+    simp_options::auditd:
+      identifiers:
+      - AU-14(1)
+      - AU-1(b)
+      - AU-2(a)
+      - AU-2(c)
+      - AU-2(d)
+      - AU-10
+      value: true
+    simp_options::clamav:
+      identifiers:
+      - SI-3(a)
+      value: true
+    simp_options::fips:
+      identifiers:
+      - AC-3
+      - AC-17A(2)
+      - IA-7
+      - SC-13
+      value: true
+    simp_options::firewall:
+      identifiers:
+      - AC-4
+      value: true
+    simp_options::haveged:
+      identifiers:
+      - SC-13
+      value: true
+    simp_options::ipsec:
+      identifiers:
+      - SC-8
+      value: false
+      notes: Turning ipsec on only enhances security.
+    simp_options::kerberos:
+      identifiers:
+      - IA-3
+      value: false
+      notes: Turning kerberos on only enhances security.
+    simp_options::ldap:
+      identifiers:
+      - IA-2
+      value: true
+    simp_options::logrotate:
+      identifiers:
+      - AU-4
+      - AU-11
+      value: true
+    simp_options::pam:
+      identifiers:
+      - IA-5
+      value: true
+    simp_options::pki:
+      identifiers:
+      - SC-8
+      - IA-3
+      value: simp
+    simp_options::selinux:
+      identifiers:
+      - AC-3(3)
+      value: true
+    simp_options::sssd:
+      identifiers:
+      - IA-2
+      value: true
+    simp_options::stunnel:
+      identifiers:
+      - SC-8
+      - SC-8(1)
+      - SC-8(2)
+      - SC-23
+      value: true
+    simp_options::syslog:
+      identifiers:
+      - AU-3(2)
+      - AU-4(1)
+      - AU-9
+      value: true
+    simp_options::tcpwrappers:
+      identifiers:
+      - AC-4
+      value: true
     aide::default_rules:
       identifiers:
       - SI-7
@@ -331,10 +412,6 @@ compliance_map:
       value: true
       notes: If ClamAV is not used, alternate malicious code detection software should
         be implemented
-    simp_options::firewall:
-      identifiers:
-      - AC-4
-      value: true
     iptables::default_rules:
       identifiers:
       - AC-4
@@ -564,7 +641,7 @@ compliance_map:
     simp_openldap::server::allow_sync:
       identifiers:
       - IA-2
-      value: hostAuth
+      value: true
     simp_openldap::server::schema_source:
       identifiers:
       - IA-1
@@ -991,23 +1068,17 @@ compliance_map:
       - AU-11
       value: weekly
       notes: This value can vary according to storage capacity of a log server
-    simp_rsyslog::server::size:
-      identifiers:
-      - AU-4
-      - AU-11
-      value: ''
-      notes: This value can vary according to storage capacity of a log server
-    simp_rsyslog::security_relevant_logs:
+    simp_rsyslog::default_logs:
       identifiers:
       - AU-2(a)
       - AU-2(d)
       - AU-3(2)
       - AU-14
-      value: if $programname == 'sudosh' or $programname == 'yum' or $syslogfacility-text
-        == 'cron' or $syslogfacility-text == 'authpriv' or $syslogfacility-text ==
-        'local5' or $syslogfacility-text == 'local6' or $syslogfacility-text == 'local7'
-        or $syslogpriority-text == 'emerg' or ( $syslogfacility-text == 'kern' and
-        $msg startswith 'IPT:' ) then
+      value:
+        programs: [ 'sudo', 'sudosh', 'yum', 'auditd', 'audit', 'systemd', 'crond' ]
+        facilities: [ 'cron.*', 'authpriv.*', 'local6.*', 'local7.warn', '*.emerg']
+        msg_starts: ['IPT:']
+        msg_regex: []
       notes: If the default security relevant logs are changed, they should be justified,
         especially if fewer than the SIMP default are configured
     simp::server::allow_simp_user:
@@ -1026,23 +1097,23 @@ compliance_map:
       - SC-13
       - SC-23
       value: true
-    sssd::client::enumerate_users:
+    simp::sssd::client::enumerate_users:
       identifiers:
       - IA-2
       value: false
-    sssd::client::min_id:
+    simp::sssd::client::min_id:
       identifiers:
       - IA-2
       value: 1000
-    sssd::client::autofs:
+    simp::sssd::client::autofs:
       identifiers:
       - IA-2
       value: true
-    sssd::client::ldap:
+    simp::sssd::client::ldap_domain:
       identifiers:
       - IA-2
       value: true
-    sssd::client::ssh:
+    simp::sssd::client::ssh:
       identifiers:
       - SC-8
       - SC-8(1)
@@ -1050,7 +1121,7 @@ compliance_map:
       - SC-13
       - SC-23
       value: true
-    sssd::client::sudo:
+    simp::sssd::client::sudo:
       identifiers:
       - AC-6(9)
       - AU-14
@@ -1070,8 +1141,7 @@ compliance_map:
       value: apache
     simp_apache::conf::logfacility:
       identifiers:
-      - AU-3(2)
-      - AU-4(1)
+
       - AU-9
       value: local6
     simp_apache::conf::logformat:
@@ -1162,24 +1232,25 @@ compliance_map:
       - CP-12
       - SI-11
       value: false
-#Where did this go?
-#simplib::daemon_umask:
-#      identifiers:
-#      - AC-2
-#      - AC-2(4)
-#      - AC-6
-#      value: '0027'
-#    simplib::disable_hosts_equiv:
-#      identifiers:
-#      - CM-6
-#      - SC-8
-#      value: true
+# Figure out where this ended up.
+    simplib::daemon_umask:
+      identifiers:
+      - AC-2
+      - AC-2(4)
+      - AC-6
+      value: '0027'
+    simplib::disable_hosts_equiv:
+# Figure out where this ended up.
+      identifiers:
+      - CM-6
+      - SC-8
+      value: true
     simp::manage_rc_local:
       identifiers:
       - CM-6
       value: true
       notes: If rc.local is enabled in EL7, it should be justified and documented
-   resolv::host_conf::spoof:
+    resolv::host_conf::spoof:
       identifiers:
       - SC-20
       value: 'warn'
@@ -1427,15 +1498,15 @@ compliance_map:
       - AC-3
       - CM-7
       value: true
-    simp::manage_tmp_perms:
+    simp::mountpoints::manage_tmp_perms:
       identifiers:
       - AC-3
       - CM-7
       value: true
-    simp::max_logins:
+    simp::pam_limits::max_logins:
       identifiers:
       - AC-10
-      value: '10'
+      value: 11
       notes: Setting this number higher than 10 should be justified
     simp::kmod_blacklist::blacklist:
       identifiers:
@@ -1524,7 +1595,7 @@ compliance_map:
       - sss
       notes: This is part of the overall SIMP authentication architecture. Different
         implementations can be used but should be justified
-    nsswitch::use_ldap:
+    simp::nsswitch::ldap:
       identifiers:
       - IA-1
       value: true
@@ -1576,12 +1647,12 @@ compliance_map:
       - noexec
       - nodev
       - nosuid
-    simp::mountpoints::tmp::secure_tmp_mounts:
+    simp::mountpoints:tmp::secure:
       identifiers:
       - AC-3
       - CM-7
       value: true
-    simp::mountpoints::tmp_opts:
+    simp::mountpoints::tmp::tmp_opts:
       identifiers:
       - AC-3
       - CM-7
@@ -1589,7 +1660,7 @@ compliance_map:
       - noexec
       - nodev
       - nosuid
-    simp::mountpoints::var_tmp_opts:
+    simp::mountpoints::tmp::var_tmp_opts:
       identifiers:
       - AC-3
       - CM-7
@@ -1597,7 +1668,7 @@ compliance_map:
       - noexec
       - nodev
       - nosuid
-    simplib::securetty:
+    useradd::securetty:
       identifiers:
       - IA-2(1)
       - AC-1(1)
@@ -1613,6 +1684,7 @@ compliance_map:
       - ttyS1
       notes: This list can actually be reduced in many cases.  This is a list that
         the SIMP team feels might be needed for most systems
+ # Figure out where this ends up
     simplib::shells:
       identifiers:
       - CM-6
@@ -1742,26 +1814,20 @@ compliance_map:
       identifiers:
       - CM-7
       value: '0'
-    simplib::use_fips:
+    simp::fips:
       identifiers:
       - AC-3
       - AC-17A(2)
       - IA-7
       - SC-13
       value: true
-    simplib::use_fips_aesni:
+    fips::aesni:
       identifiers:
       - AC-3
       - AC-17A(2)
       - IA-7
       - SC-13
       value: true
-    simplib::user_umask:
-      identifiers:
-      - AC-2
-      - AC-2(4)
-      - AC-6
-      value: '0077'
     simp::yum::schedule::repos:
       identifiers:
       - CM-3(3)
@@ -1782,11 +1848,6 @@ compliance_map:
       value: true
       notes: If the default entry is not used, each of the values for the ssh client
         config should be evaluated
-    simp::sssd::enable_client:
-      identifiers:
-      - AC-17
-      - AC-17(2)
-      value: true
     ssh::server::conf::authorizedkeyscommanduser:
       identifiers:
       - IA-1
@@ -1854,7 +1915,7 @@ compliance_map:
       identifiers:
       - CM-7
       value: false
-    ssh::pki:
+    ssh::server:conf::pki:
       identifiers:
       - SC-8(1)
       - SC-8(2)
@@ -1934,7 +1995,7 @@ compliance_map:
       - SC-8(1)
       - SC-8(2)
       - SC-23
-      value: true
+      value: simp
     stunnel::connection::openssl_cipher_suite:
       identifiers:
       - SC-8
@@ -2010,14 +2071,14 @@ compliance_map:
       - AC-2(4)
       - AC-6
       value: '022'
-    vsftpd::config::ssl_ciphers:
+    vsftpd::cipher_suite:
       identifiers:
       - SC-8
       - SC-8(1)
       - SC-8(2)
       - SC-23
       value:
-      - HIGH
+      - DEFAULT
     vsftpd::config::ssl_tlsv1:
       identifiers:
       - SC-8
